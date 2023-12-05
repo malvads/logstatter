@@ -4,7 +4,11 @@ use std::io::Read;
 
 #[derive(Debug, Deserialize)]
 pub struct AppConfig {
+    pub monitors: Vec<String>,
+    pub pipelines: Vec<String>,
     pub base_url: String,
+    pub brokers: Vec<String>,
+    pub topic: String
 }
 
 pub struct ConfigManager;

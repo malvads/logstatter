@@ -1,71 +1,88 @@
 mod cli;
+mod kafka;
 mod config_manager;
 mod logstash_client;
+mod host;
 
 use cli::CliParser;
-use config_manager::AppConfig;
-use logstash_client::HttpClient;
+use kafka::{KafkaProducer, MessageProducer};
+use logstash_client::{HttpClient};
 use config_manager::ConfigManager;
+use host::Hostname;
+use std::time::Duration;
+use tokio::time::interval;
 
-async fn handle_logstash_operation(logstash_client: &HttpClient, option: &str, pipeline: &str) {
-    match option {
-        "c" => handle_async_operation(logstash_client.get_logstash_cpu_percentage().await),
-        "l" => handle_async_operation(logstash_client.get_logstash_load_average_1m().await),
-        "m" => handle_async_operation(logstash_client.get_logstash_load_average_5m().await),
-        "n" => handle_async_operation(logstash_client.get_logstash_load_average_15m().await),
-        "u" => handle_async_operation(logstash_client.get_logstash_jvm_heap().await),
-        "v" => handle_async_operation(logstash_client.get_logstash_memory().await),
-        "e" => handle_async_operation(logstash_client.get_logstash_events_count(pipeline).await),
-        "w" => handle_async_operation(logstash_client.get_logstash_queue_events(pipeline).await),
-        "z" => handle_async_operation(logstash_client.get_logstash_queue_size_in_bytes(pipeline).await),
-        _ => {}
+struct MonitorProcessor {
+    monitor: String,
+    pipeline: String,
+}
+
+impl MonitorProcessor {
+    async fn process(&self, logstash_client: &mut HttpClient, producer: &mut KafkaProducer, topic: &str) {
+        match logstash_client.handle_logstash_operation(&self.monitor, &self.pipeline).await {
+            Ok(logstash_result) => {
+
+                let mut message_producer = MessageProducer::new();
+                message_producer.set_timestamp();
+                message_producer.set_monitor(&self.monitor);
+                message_producer.set_value(&logstash_result.result_data);
+                message_producer.set_sensor_name(&Hostname::get_hostname(), &self.pipeline);
+                message_producer.set_unit(&logstash_result.unit);
+                message_producer.set_type("system");
+
+                let result = message_producer.get_object_as_str();
+
+                if logstash_result.valid {
+                    println!("{}", result);
+
+                    match producer.produce_message(&topic, &result) {
+                        Ok(_) => println!("Message sent successfully"),
+                        Err(err) => eprintln!("Error producing message: {}", err),
+                    }
+                }
+            }
+            Err(err) => {
+                eprintln!("Error handling Logstash operation: {}", err);
+            }
+        }
     }
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let cli_options = cli::CliParser::new();
+    let cli_options = CliParser::new();
     let mut logstash_client = HttpClient::new();
 
-    match try_read_config(&cli_options.config_file) {
-        Ok(config) => {
+    match ConfigManager::read_config(&cli_options.config_file) {
+        Ok(mut config) => {
+            let mut producer = KafkaProducer::new(config.brokers.clone());
+            let topic = &config.topic;
             logstash_client.set_base_url(&config.base_url);
-            process_options(&logstash_client, &cli_options).await;
+
+            config.pipelines.push(String::new());
+
+            let interval_duration = Duration::from_secs(60);
+            let mut interval = interval(interval_duration);
+
+            loop {
+                interval.tick().await;
+
+                for monitor in &config.monitors {
+                    for pipeline in &config.pipelines {
+                        let monitor_processor = MonitorProcessor {
+                            monitor: monitor.clone(),
+                            pipeline: pipeline.clone(),
+                        };
+                        monitor_processor.process(&mut logstash_client, &mut producer, &topic).await;
+                    }
+                }
+            }
+
         }
         Err(err) => {
             eprintln!("Error reading config: {}", err);
-            eprintln!("Please specify config...");
         }
     }
 
     Ok(())
-}
-
-fn try_read_config(config_file: &str) -> Result<AppConfig, Box<dyn std::error::Error>> {
-    ConfigManager::read_config(config_file).or_else(|_| {
-        ConfigManager::read_config("/etc/logstastter.conf")
-    })
-}
-
-async fn process_options(logstash_client: &HttpClient, cli_options: &CliParser) {
-    for &option in &cli_options.options {
-        if cli_options.is_option_passed(option) {
-            handle_logstash_operation(
-                logstash_client,
-                option,
-                cli_options.get_option_value(option).as_str(),
-            )
-            .await;
-        }
-    }
-}
-
-fn handle_async_operation<T>(result: Result<T, reqwest::Error>)
-where
-    T: std::fmt::Debug,
-{
-    match result {
-        Ok(value) => println!("{:?}", value),
-        Err(err) => eprintln!("Error: {:?}", err),
-    }
 }
