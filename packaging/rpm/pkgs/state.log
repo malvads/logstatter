@@ -58,3 +58,28 @@
 2023-12-11 14:58:27,401 - Finish: buildsrpm
 2023-12-11 14:58:27,404 - Start: clean chroot
 2023-12-11 14:58:29,302 - Finish: clean chroot
+2023-12-11 14:58:56,111 - Mock Version: 2.17
+2023-12-11 14:58:58,733 - Start: dnf update
+2023-12-11 14:59:06,913 - Finish: dnf update
+2023-12-11 14:59:06,920 - Finish: chroot init
+2023-12-11 14:59:06,925 - Start: buildsrpm
+2023-12-11 14:59:06,936 - Start: rpmbuild -bs
+2023-12-11 14:59:07,485 - Finish: rpmbuild -bs
+2023-12-11 14:59:07,489 - Finish: buildsrpm
+2023-12-11 14:59:07,491 - Start: clean chroot
+2023-12-11 14:59:09,103 - Finish: clean chroot
+2023-12-11 14:59:09,104 - Finish: run
+2023-12-11 14:59:12,446 - Mock Version: 2.17
+2023-12-11 14:59:15,519 - Start: dnf update
+2023-12-11 14:59:22,606 - Finish: dnf update
+2023-12-11 14:59:22,612 - Finish: chroot init
+2023-12-11 14:59:22,614 - Start: build phase for rb-logstatter-0.0.1-1.el9.rb.src.rpm
+2023-12-11 14:59:22,615 - Start: build setup for rb-logstatter-0.0.1-1.el9.rb.src.rpm
+2023-12-11 14:59:27,943 - Finish: build setup for rb-logstatter-0.0.1-1.el9.rb.src.rpm
+2023-12-11 14:59:27,943 - Start: Outputting list of installed packages
+2023-12-11 14:59:28,572 - Finish: Outputting list of installed packages
+2023-12-11 14:59:28,573 - Start: rpmbuild rb-logstatter-0.0.1-1.el9.rb.src.rpm
+2023-12-11 14:59:29,209 - Finish: rpmbuild rb-logstatter-0.0.1-1.el9.rb.src.rpm
+2023-12-11 14:59:29,209 - Finish: build phase for rb-logstatter-0.0.1-1.el9.rb.src.rpm
+2023-12-11 14:59:29,212 - Start: clean chroot
+2023-12-11 14:59:30,846 - Finish: clean chroot

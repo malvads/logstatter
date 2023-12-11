@@ -8,6 +8,8 @@ License:   AGPL-3.0
 URL:       https://github.com/malvads/logstatter
 Source0:   %{name}-%{version}.tar.gz
 
+BuildRequires:  rustc >= 1.74.0
+
 %description
 %{summary}
 
