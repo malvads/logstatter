@@ -26,10 +26,19 @@ cargo build --release
 
 %install
 install -D target/release/logstatter %{buildroot}/usr/bin/logstatter
+install -D -m 0644 systemd/rb-logstatter.service %{buildroot}/usr/lib/systemd/system/rb-logstatter.service
+
+
+%post
+systemctl daemon-reload
 
 %files
-%doc
+%defattr(0755,root,root)
 /usr/bin/logstatter
+%defattr(644,root,root)
+/usr/lib/systemd/system/rb-logstatter.service
+
+%doc
 
 %changelog
 * Mon Dec 11 2023 Miguel Álvarez <malvarez@redborder.com> - 0.0.1-1
