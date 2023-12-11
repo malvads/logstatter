@@ -28,8 +28,8 @@ cargo build --release
 install -D target/release/logstatter %{buildroot}/usr/bin/logstatter
 install -D -m 0644 src/systemd/rb-logstatter.service %{buildroot}/usr/lib/systemd/system/rb-logstatter.service
 install -D -m 0644 src/etc/logstatter.conf %{buildroot}/etc/logstatter/logstatter.conf
-%{__id_u} logsattter &>/dev/null || %{__useradd} -r -g logsattter -d %{_var}/lib/logsattter -s /sbin/nologin -c "logstatter user" logsattter 2>/dev/null
-%{__id_g} logsattter &>/dev/null || %{__groupadd} -r logsattter 2>/dev/null
+%{__id_u} logstatter &>/dev/null || %{__useradd} -r -g logstatter -d %{_var}/lib/logstatter -s /sbin/nologin -c "logstatter user" logstatter 2>/dev/null
+%{__id_g} logstatter &>/dev/null || %{__groupadd} -r logstatter 2>/dev/null
 
 %post
 systemctl daemon-reload
