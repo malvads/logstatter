@@ -26,8 +26,8 @@ cargo build --release
 
 %install
 install -D target/release/logstatter %{buildroot}/usr/bin/logstatter
-install -D -m 0644 systemd/rb-logstatter.service %{buildroot}/usr/lib/systemd/system/rb-logstatter.service
-
+install -D -m 0644 src/systemd/rb-logstatter.service %{buildroot}/usr/lib/systemd/system/rb-logstatter.service
+install -D -m 0644 src/etc/logstatter.conf %{buildroot}/etc/logstatter/logstatter.conf
 
 %post
 systemctl daemon-reload
