@@ -6,3 +6,7 @@ rpm:
 
 rpmtest:
 	$(MAKE) LATEST=`git stash create` -C packaging/rpm
+
+clean:
+	rm -rf packaging/rpm/pkgs/*
+	rm -rf packaging/rpm/SOURCES/*

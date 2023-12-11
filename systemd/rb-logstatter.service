@@ -1,0 +1,22 @@
+[Unit]
+Description=redBorder Logstash Monitor Service
+Requires=network.target
+After=network.target
+
+[Service]
+TimeoutStartSec=30
+RestartSec=10
+Restart=always
+
+User=logstatter
+Group=logstatter
+
+KillSignal=SIGTERM
+Type=simple
+
+ExecStart=/usr/bin/logsattter -c /etc/logsattter/logstatter.conf
+
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target
