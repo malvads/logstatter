@@ -31,9 +31,10 @@ install -D -m 0644 src/etc/logstatter.conf %{buildroot}/etc/logstatter/logstatte
 
 %post
 systemctl daemon-reload
+systemctl start rb-logstatter
 
 %files
-%defattr(0755,root,root)
+%defattr(0755,logstatter,logstatter)
 /usr/bin/logstatter
 %defattr(644,root,root)
 /usr/lib/systemd/system/rb-logstatter.service

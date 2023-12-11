@@ -14,7 +14,7 @@ Group=logstatter
 KillSignal=SIGTERM
 Type=simple
 
-ExecStart=/usr/bin/logsattter -c /etc/logsattter/logstatter.conf
+ExecStart=/usr/bin/logstatter -c /etc/logstatter/logstatter.conf
 
 TimeoutStopSec=60
 
