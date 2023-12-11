@@ -37,6 +37,7 @@ systemctl daemon-reload
 /usr/bin/logstatter
 %defattr(644,root,root)
 /usr/lib/systemd/system/rb-logstatter.service
+/etc/logstatter/logstatter.conf
 
 %doc
 
