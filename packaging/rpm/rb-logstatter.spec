@@ -1,4 +1,4 @@
-Name:      logstatter
+Name:      rb-logstatter
 Version:   0.0.1
 Release:   1%{?dist}
 BuildArch: noarch

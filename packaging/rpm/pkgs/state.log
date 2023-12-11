@@ -48,3 +48,13 @@
 2023-12-11 14:56:28,489 - Finish: buildsrpm
 2023-12-11 14:56:28,490 - Start: clean chroot
 2023-12-11 14:56:30,381 - Finish: clean chroot
+2023-12-11 14:58:16,389 - Mock Version: 2.17
+2023-12-11 14:58:19,044 - Start: dnf update
+2023-12-11 14:58:26,719 - Finish: dnf update
+2023-12-11 14:58:26,726 - Finish: chroot init
+2023-12-11 14:58:26,730 - Start: buildsrpm
+2023-12-11 14:58:26,738 - Start: rpmbuild -bs
+2023-12-11 14:58:27,397 - Finish: rpmbuild -bs
+2023-12-11 14:58:27,401 - Finish: buildsrpm
+2023-12-11 14:58:27,404 - Start: clean chroot
+2023-12-11 14:58:29,302 - Finish: clean chroot
