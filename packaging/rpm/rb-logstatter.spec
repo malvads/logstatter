@@ -1,6 +1,6 @@
 Name:           logstatter
-Version: %{__version}
-Release: %{__release}%{?dist}
+Version: 0.0.1
+Release: 1%{?dist}
 BuildArch: noarch
 Summary: RedBorder Python AI Outliers Detection Service
 
@@ -9,7 +9,7 @@ URL:            https://github.com/malvads/logstatter
 Source0:        %{name}-%{version}.tar.gz
 
 %description
-Rust app to monitor logstash.
+%{summary}
 
 %prep
 %autosetup
