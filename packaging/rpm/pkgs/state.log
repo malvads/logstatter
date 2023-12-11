@@ -18,3 +18,33 @@
 2023-12-11 14:52:04,100 - Finish: buildsrpm
 2023-12-11 14:52:04,101 - Start: clean chroot
 2023-12-11 14:52:06,117 - Finish: clean chroot
+2023-12-11 14:54:53,149 - Mock Version: 2.17
+2023-12-11 14:54:57,107 - Start: dnf update
+2023-12-11 14:55:04,273 - Finish: dnf update
+2023-12-11 14:55:04,279 - Finish: chroot init
+2023-12-11 14:55:04,284 - Start: buildsrpm
+2023-12-11 14:55:04,293 - Start: rpmbuild -bs
+2023-12-11 14:55:05,007 - Finish: rpmbuild -bs
+2023-12-11 14:55:05,011 - Finish: buildsrpm
+2023-12-11 14:55:05,012 - Start: clean chroot
+2023-12-11 14:55:06,895 - Finish: clean chroot
+2023-12-11 14:55:32,388 - Mock Version: 2.17
+2023-12-11 14:55:36,224 - Start: dnf update
+2023-12-11 14:55:43,767 - Finish: dnf update
+2023-12-11 14:55:43,773 - Finish: chroot init
+2023-12-11 14:55:43,777 - Start: buildsrpm
+2023-12-11 14:55:43,784 - Start: rpmbuild -bs
+2023-12-11 14:55:44,136 - Finish: rpmbuild -bs
+2023-12-11 14:55:44,138 - Finish: buildsrpm
+2023-12-11 14:55:44,139 - Start: clean chroot
+2023-12-11 14:55:45,946 - Finish: clean chroot
+2023-12-11 14:56:17,772 - Mock Version: 2.17
+2023-12-11 14:56:21,261 - Start: dnf update
+2023-12-11 14:56:27,943 - Finish: dnf update
+2023-12-11 14:56:27,950 - Finish: chroot init
+2023-12-11 14:56:27,954 - Start: buildsrpm
+2023-12-11 14:56:27,960 - Start: rpmbuild -bs
+2023-12-11 14:56:28,487 - Finish: rpmbuild -bs
+2023-12-11 14:56:28,489 - Finish: buildsrpm
+2023-12-11 14:56:28,490 - Start: clean chroot
+2023-12-11 14:56:30,381 - Finish: clean chroot

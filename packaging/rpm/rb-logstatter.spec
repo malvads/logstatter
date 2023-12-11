@@ -1,12 +1,12 @@
-Name:           logstatter
-Version: 0.0.1
-Release: 1%{?dist}
+Name:      logstatter
+Version:   0.0.1
+Release:   1%{?dist}
 BuildArch: noarch
-Summary: RedBorder Python AI Outliers Detection Service
+Summary:   RedBorder Python AI Outliers Detection Service
 
-License:        AGPL-3.0
-URL:            https://github.com/malvads/logstatter
-Source0:        %{name}-%{version}.tar.gz
+License:   AGPL-3.0
+URL:       https://github.com/malvads/logstatter
+Source0:   %{name}-%{version}.tar.gz
 
 %description
 %{summary}
