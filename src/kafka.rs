@@ -3,7 +3,6 @@ use kafka::error::Error as KafkaError;
 use serde_json::{json, Map, Value};
 use time::OffsetDateTime;
 
-#[derive(Clone)]
 pub struct MessageProducer {
     fields: Map<String, Value>,
 }
