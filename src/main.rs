@@ -4,6 +4,7 @@ mod config_manager;
 mod logstash_client;
 mod host;
 
+use std::thread;
 use cli::CliParser;
 use kafka::{KafkaProducer, MessageProducer};
 use logstash_client::{HttpClient};
@@ -18,19 +19,18 @@ struct MonitorProcessor {
 }
 
 impl MonitorProcessor {
-    async fn process(&self, logstash_client: &mut HttpClient, producer: &mut KafkaProducer, topic: &str) {
+    async fn process(&self, event: &mut MessageProducer, logstash_client: &mut HttpClient, producer: &mut KafkaProducer, topic: &str, hostname: &str) {
         match logstash_client.handle_logstash_operation(&self.monitor, &self.pipeline).await {
             Ok(logstash_result) => {
 
-                let mut message_producer = MessageProducer::new();
-                message_producer.set_timestamp();
-                message_producer.set_monitor(&self.monitor);
-                message_producer.set_value(&logstash_result.result_data);
-                message_producer.set_sensor_name(&Hostname::get_hostname(), &self.pipeline);
-                message_producer.set_unit(&logstash_result.unit);
-                message_producer.set_type("system");
+                event.set_timestamp();
+                event.set_monitor(&self.monitor);
+                event.set_value(&logstash_result.result_data);
+                event.set_sensor_name(&hostname, &self.pipeline);
+                event.set_unit(&logstash_result.unit);
+                event.set_type("system");
 
-                let result = message_producer.get_object_as_str();
+                let result = event.get_object_as_str();
 
                 if logstash_result.valid {
                     println!("{}", result);
@@ -48,10 +48,16 @@ impl MonitorProcessor {
     }
 }
 
+fn sleep(milliseconds: u64) {
+    thread::sleep(Duration::from_millis(milliseconds));
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli_options = CliParser::new();
+    let hostname = Hostname::get_hostname();
     let mut logstash_client = HttpClient::new();
+    let mut event = MessageProducer::new();
 
     match ConfigManager::read_config(&cli_options.config_file) {
         Ok(mut config) => {
@@ -64,20 +70,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let interval_duration = Duration::from_secs(60);
             let mut interval = interval(interval_duration);
 
+            let mut monitor_processor = MonitorProcessor {
+                monitor: String::new(),
+                pipeline: String::new(),
+            };
+
             loop {
                 interval.tick().await;
 
                 for monitor in &config.monitors {
                     for pipeline in &config.pipelines {
-                        let monitor_processor = MonitorProcessor {
-                            monitor: monitor.clone(),
-                            pipeline: pipeline.clone(),
-                        };
-                        monitor_processor.process(&mut logstash_client, &mut producer, &topic).await;
+                        monitor_processor.monitor = monitor.clone();
+                        monitor_processor.pipeline = pipeline.clone();
+
+                        monitor_processor.process(&mut event, &mut logstash_client, &mut producer, &topic, &hostname).await;
+
+                        sleep(config.request_sleep);
                     }
                 }
             }
-
         }
         Err(err) => {
             eprintln!("Error reading config: {}", err);

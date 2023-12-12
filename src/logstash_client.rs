@@ -51,7 +51,7 @@ impl HttpClient {
     }
     
     pub async fn get_logstash_memory(&self) -> Result<u64, ReqwestError> {
-        let data = self.make_request("/_node/stats/jvm?pretty").await?;
+        let data = self.make_request("/_node/stats/process?pretty").await?;
     
         Ok(data.get("process")
             .and_then(|process| process.get("mem"))
