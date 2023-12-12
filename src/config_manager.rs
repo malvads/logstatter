@@ -8,7 +8,8 @@ pub struct AppConfig {
     pub pipelines: Vec<String>,
     pub base_url: String,
     pub brokers: Vec<String>,
-    pub topic: String
+    pub topic: String,
+    pub request_sleep: u64
 }
 
 pub struct ConfigManager;
