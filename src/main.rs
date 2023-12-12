@@ -85,8 +85,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                         monitor_processor.process(&mut event, &mut logstash_client, &mut producer, &topic, &hostname).await;
 
-                        sleep(150);
+                        sleep(50);
                     }
+                    sleep(50);
                 }
             }
         }
