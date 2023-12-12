@@ -2,6 +2,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 use reqwest::Error as ReqwestError;
 
+#[derive(Clone)]
 pub struct HttpClient {
     base_url: Option<String>,
 }

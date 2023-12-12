@@ -4,6 +4,7 @@ mod config_manager;
 mod logstash_client;
 mod host;
 
+use tokio::task;
 use cli::CliParser;
 use kafka::{KafkaProducer, MessageProducer};
 use logstash_client::{HttpClient};
@@ -18,19 +19,18 @@ struct MonitorProcessor {
 }
 
 impl MonitorProcessor {
-    async fn process(&self, logstash_client: &mut HttpClient, producer: &mut KafkaProducer, topic: &str) {
+    async fn process(&self, event: &mut MessageProducer, logstash_client: &mut HttpClient, producer: &mut KafkaProducer, topic: &str, hostname: &str) {
         match logstash_client.handle_logstash_operation(&self.monitor, &self.pipeline).await {
             Ok(logstash_result) => {
 
-                let mut message_producer = MessageProducer::new();
-                message_producer.set_timestamp();
-                message_producer.set_monitor(&self.monitor);
-                message_producer.set_value(&logstash_result.result_data);
-                message_producer.set_sensor_name(&Hostname::get_hostname(), &self.pipeline);
-                message_producer.set_unit(&logstash_result.unit);
-                message_producer.set_type("system");
+                event.set_timestamp();
+                event.set_monitor(&self.monitor);
+                event.set_value(&logstash_result.result_data);
+                event.set_sensor_name(&hostname, &self.pipeline);
+                event.set_unit(&logstash_result.unit);
+                event.set_type("system");
 
-                let result = message_producer.get_object_as_str();
+                let result = event.get_object_as_str();
 
                 if logstash_result.valid {
                     println!("{}", result);
@@ -51,11 +51,12 @@ impl MonitorProcessor {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli_options = CliParser::new();
+    let hostname = Hostname::get_hostname();
     let mut logstash_client = HttpClient::new();
+    let event = MessageProducer::new();
 
     match ConfigManager::read_config(&cli_options.config_file) {
         Ok(mut config) => {
-            let mut producer = KafkaProducer::new(config.brokers.clone());
             let topic = &config.topic;
             logstash_client.set_base_url(&config.base_url);
 
@@ -66,18 +67,44 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             loop {
                 interval.tick().await;
-
+            
+                let mut tasks = Vec::new();
+            
                 for monitor in &config.monitors {
                     for pipeline in &config.pipelines {
-                        let monitor_processor = MonitorProcessor {
-                            monitor: monitor.clone(),
-                            pipeline: pipeline.clone(),
-                        };
-                        monitor_processor.process(&mut logstash_client, &mut producer, &topic).await;
+                        let monitor_clone = monitor.clone();
+                        let pipeline_clone = pipeline.clone();
+                        let mut event_clone = event.clone();
+                        let mut logstash_client_clone = logstash_client.clone();
+                        let mut producer_clone = KafkaProducer::new(config.brokers.clone());
+                        let topic_clone = topic.clone();
+                        let hostname_clone = hostname.clone();
+            
+                        let task = task::spawn(async move {
+                            let monitor_processor = MonitorProcessor {
+                                monitor: monitor_clone,
+                                pipeline: pipeline_clone,
+                            };
+            
+                            monitor_processor
+                                .process(
+                                    &mut event_clone,
+                                    &mut logstash_client_clone,
+                                    &mut producer_clone,
+                                    &topic_clone,
+                                    &hostname_clone,
+                                )
+                                .await;
+                        });
+            
+                        tasks.push(task);
                     }
                 }
+            
+                for task in tasks {
+                    task.await.unwrap();
+                }
             }
-
         }
         Err(err) => {
             eprintln!("Error reading config: {}", err);
