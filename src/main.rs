@@ -4,6 +4,7 @@ mod config_manager;
 mod logstash_client;
 mod host;
 
+use std::thread;
 use cli::CliParser;
 use kafka::{KafkaProducer, MessageProducer};
 use logstash_client::{HttpClient};
@@ -45,6 +46,10 @@ impl MonitorProcessor {
             }
         }
     }
+}
+
+fn sleep(milliseconds: u64) {
+    thread::sleep(Duration::from_millis(milliseconds));
 }
 
 #[tokio::main]
