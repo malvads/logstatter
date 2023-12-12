@@ -79,6 +79,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         monitor_processor.pipeline = pipeline.clone();
 
                         monitor_processor.process(&mut event, &mut logstash_client, &mut producer, &topic, &hostname).await;
+                        //Trick for reduce CPU usage
+                        sleep(50);
                     }
                 }
             }
