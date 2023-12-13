@@ -1,0 +1,27 @@
+name: Linux Build
+
+on:
+  push:
+  pull_request:
+
+env: 
+  CARGO_TERM_COLOR: always
+
+jobs:
+
+  build_and_test:
+    name: logstatter - latest
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        toolchain:
+          - stable
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
+      - name: Build and test
+        run: cargo build --verbose

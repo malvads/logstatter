@@ -1,4 +1,4 @@
-name: Cargo Build
+name: macOS Build
 
 on:
   push:
@@ -11,23 +11,16 @@ jobs:
 
   build_and_test:
     name: logstatter - latest
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
         toolchain:
           - stable
     steps:
-      - uses: actions/checkout@v4
-
+      - uses: actions/checkout@v3
       - name: Set up Rust
         run: |
-          if ($env:GITHUB_JOB_OS -eq "windows-latest") {
-            choco install rust
-          } else {
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          }
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
-
       - name: Build and test
         run: cargo build --verbose
