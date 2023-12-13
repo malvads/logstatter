@@ -27,13 +27,10 @@ jobs:
       - name: Build and test
         run: cargo build --verbose
 
-      - name: Check if tag exists
-        id: check_tag
-        run: echo "::set-output name=exists::$(git rev-parse -q --verify refs/tags/latest/linux/x86_64 || echo 'false')"
-
       - name: Create tag
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check_tag.outputs.exists == 'false'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
+          git fetch --all --tags
           git tag "latest/linux/x86_64"
           git push origin "latest/linux/x86_64"
         env:
@@ -69,13 +66,10 @@ jobs:
       - name: Build and test
         run: cargo build --verbose
 
-      - name: Check if tag exists
-        id: check_tag
-        run: echo "::set-output name=exists::$(git rev-parse -q --verify refs/tags/latest/linux/aarch64 || echo 'false')"
-
       - name: Create tag
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check_tag.outputs.exists == 'false'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
+          git fetch --all --tags
           git tag "latest/linux/aarch64"
           git push origin "latest/linux/aarch64"
         env:
