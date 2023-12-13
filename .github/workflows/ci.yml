@@ -17,20 +17,17 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
         toolchain:
           - stable
-          - beta
-          - nightly
     steps:
       - uses: actions/checkout@v3
 
       - name: Set up Rust
         run: |
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+          if ($env:GITHUB_JOB_OS -eq "windows-latest") {
             choco install rust
-          else
+          } else {
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          fi
+          }
           rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
 
       - name: Build and test
         run: cargo build --verbose
-
