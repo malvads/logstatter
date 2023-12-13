@@ -9,7 +9,7 @@
 
 ## Overview
 
-LogStatter is a high-performance monitoring application for logstash written in Rust. is designed to provide lightning-fast real-time pipeline anaylsis for Logstash, with output capabilities to Kafka.
+LogStatter is a high-performance monitoring application for logstash written in Rust. is designed to provide lightning-fast real-time process & pipeline anaylsis for Logstash, with output capabilities to Kafka.
 
 ## Getting Started
 
