@@ -30,4 +30,4 @@ jobs:
         docker exec builder bash -c "cd /build/ && make rpm"
         docker exec builder git -C /build/ checkout ${GITHUB_SHA}
       env:
-        VERSION: ${{ steps.version.outputs.VERSION }}
+        VERSION: 0.0.1
