@@ -9,46 +9,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      builder:
-        image: rockylinux:9
-        options: --name builder --entrypoint /bin/sleep 
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
       with:
         fetch-depth: 0 
 
+    - name: Install mock
+      run: sudo apt-get install -y mock
+
     - name: Set Version
       id: version
-      run: echo "VERSION=$(echo ${GITHUB_REF#refs/heads/release/})" >> $GITHUB_ENV
+      run: echo "VERSION=${GITHUB_REF#refs/heads/release/}" >> $GITHUB_ENV
 
-    - name: Run Docker Container
-      run: docker run -d --name builder builder /bin/sleep infinity
-
-    - name: Copy Repository to Docker
-      run: |
-        docker cp . builder:./
-        docker exec builder git -C ./ checkout ${GITHUB_SHA}
-
-    - name: Build RPM
-      run: |
-        docker exec builder /bin/bash -c "\
-          cd ./ && \
-          make rpm VERSION=$VERSION \
-        "
-
-    - name: Extract RPMs
-      run: |
-        mkdir -p ${{ github.workspace }}/rpms
-        docker cp builder:./rpms/. ${{ github.workspace }}/rpms/
-
-    - name: Upload RPMs
-      uses: actions/upload-artifact@v2
-      with:
-        name: rpms
-        path: ${{ github.workspace }}/rpms
-
-    - name: Stop and Remove Docker Container
-      run: docker stop builder && docker rm builder
+    - name: Make RPM
+      run: make rpm
+      env:
+        VERSION: ${{ steps.version.outputs.VERSION }}
