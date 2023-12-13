@@ -41,6 +41,8 @@ jobs:
           winget install -e --id Microsoft.VisualStudio.Component.VC.140 --accept-source-agreements --accept-package-agreements
           winget install -e --id Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --accept-source-agreements --accept-package-agreements
           winget install -e --id Microsoft.Component.MSBuild --accept-source-agreements --accept-package-agreements
+          winget install -e --id Microsoft.VisualStudio.2022.BuildTools --accept-source-agreements --accept-package-agreements
+          winget install -e --id Microsoft.VisualStudio.2019.BuildTools --accept-source-agreements --accept-package-agreements
 
       - name: Set up Vcpkg
         run: |
