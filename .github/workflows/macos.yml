@@ -16,6 +16,10 @@ jobs:
       matrix:
         toolchain:
           - stable
+        arch:
+          - x86_64
+          - arm64
+
     steps:
       - uses: actions/checkout@v3
       - name: Set up Rust
