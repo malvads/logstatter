@@ -38,6 +38,8 @@ jobs:
         run: |
           git tag "latest/windows"
           git push origin "latest/windows"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Windows Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

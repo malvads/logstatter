@@ -32,7 +32,9 @@ jobs:
         run: |
           git tag "latest/macos/x86_64"
           git push origin "latest/macos/x86_64"
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Create x86_64 Release
         uses: softprops/action-gh-release@v1
         with:
@@ -65,6 +67,8 @@ jobs:
         run: |
           git tag "latest/macos/aarch64"
           git push origin "latest/macos/aarch64"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create aarch64 Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
