@@ -35,7 +35,7 @@ jobs:
         run: choco install winget -y
 
       - name: "Set Up Visual Studio Build Tools"
-        run: winget install -e --id Microsoft.VisualStudio.2022.BuildTools --quiet && winget install -e --id Microsoft.VisualStudio.2019.BuildTools --quiet
+        run: winget install -e --id Microsoft.VisualStudio.2022.BuildTools --accept-package-agreements && winget install -e --id Microsoft.VisualStudio.2019.BuildTools --accept-package-agreements
 
       - name: Set up Rust
         run: choco install rust -y
