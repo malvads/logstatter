@@ -32,6 +32,9 @@ jobs:
         env:
           OPENSSL_DIR: C:\OpenSSL
 
+      - nam: "Set Up Visual Studio Build Tools"
+        run: winget install -e --id Microsoft.VisualStudio.2022.BuildTools && winget install -e --id Microsoft.VisualStudio.2019.BuildTools
+        
       - name: Set up Rust
         run: choco install rust -y
 
