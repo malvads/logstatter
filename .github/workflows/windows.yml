@@ -31,10 +31,8 @@ jobs:
           max_attempts: 3
           command: choco install pkgconfiglite --allow-empty-checksums
 
-      - name: Set up OpenSSL
-        run: choco install openssl --params "/INSTALLDIR:C:\OpenSSL" -y
-        env:
-          OPENSSL_DIR: C:\OpenSSL
+      - name: Set up winget
+        run: choco install winget -y
 
       - name: "Set Up Visual Studio Build Tools"
         run: winget install -e --id Microsoft.VisualStudio.2022.BuildTools && winget install -e --id Microsoft.VisualStudio.2019.BuildTools
@@ -44,8 +42,6 @@ jobs:
 
       - name: Build and test
         run: cargo build --verbose
-        env:
-          OPENSSL_DIR: C:\OpenSSL
 
       - name: Create tag
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
