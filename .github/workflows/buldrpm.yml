@@ -16,7 +16,10 @@ jobs:
         fetch-depth: 0 
 
     - name: Install mock
-      run: sudo apt-get install -y mock
+      run: |
+        sudo apt-get install -y epel-release
+        sudo apt-get update
+        sudo apt-get install -y mock
 
     - name: Set Version
       id: version
