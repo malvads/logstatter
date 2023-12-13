@@ -27,7 +27,7 @@ jobs:
         docker cp ./ builder:/build
         docker exec builder bash -c "yum install -y epel-release && yum install -y make git mock"
         docker exec builder bash -c "git config --global --add safe.directory /build"
-        docker exec builder bash -c "cd /build/ && make rpm"
-        docker exec builder git -C /build/ checkout ${GITHUB_SHA}
+        docker exec builder bash -c "cd /build/"
+        docker exec builder bash -c "VERSION=${VERSION} make rpm"
       env:
         VERSION: 0.0.1
