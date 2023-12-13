@@ -34,10 +34,7 @@ jobs:
       - name: Install dependencies
         run: |
           choco install openssl --params "/NoPath /InstallDir:C:\openssl"
-          choco install pkg-config
-          # Add the OpenSSL and pkg-config directories to the PATH
           echo "::add-path::C:\openssl\bin"
-          echo "::add-path::C:\Program Files (x86)\pkg-config\bin"
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
