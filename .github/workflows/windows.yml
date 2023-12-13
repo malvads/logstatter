@@ -27,6 +27,19 @@ jobs:
       - name: Set up pkgconfiglite
         run: choco install pkgconfiglite
 
+      - name: Set up vcpkg
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          .\bootstrap-vcpkg.bat
+          .\vcpkg integrate install
+          cd ..
+
+      - name: Install OpenSSL with vcpkg
+        run: |
+          vcpkg install openssl
+          vcpkg integrate install
+
       - name: Set up Rust
         run: choco install rust -y
 
