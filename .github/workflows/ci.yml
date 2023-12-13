@@ -14,12 +14,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        fail-fast: false
         os: [ubuntu-latest, windows-latest, macOS-latest]
         toolchain:
           - stable
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@latest
 
       - name: Set up Rust
         run: |
