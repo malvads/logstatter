@@ -40,6 +40,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: target/release/logstatter
+          tag_name: latest/macos/x86_64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: latest/macos/x86_64
@@ -76,6 +77,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: target/release/logstatter
+          tag_name: latest/macos/arm64
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: latest/macos/arm64
