@@ -25,17 +25,18 @@ jobs:
     - name: Install build tools RPM
       run: |
         docker cp ./ builder:/build
-        docker exec builder bash -c "yum install -y epel-release && yum install -y make git mock"
+        docker exec builder bash -c "yum install -y epel-release make git mock"
         docker exec builder bash -c "rm -rf /etc/mock/default.cfg"
-    - name: "Setup SDK"
+    
+    - name: Setup SDK
       run: |
         docker exec builder bash -c "ln -s /build/sdk9.cfg /etc/mock/default.cfg"
         docker exec builder bash -c "ls -l /build/sdk9.cfg /etc/mock/default.cfg"
-    
+
     - name: Install RPM
-       run: |
+      run: |
         docker exec builder bash -c "git config --global --add safe.directory /build"
         docker exec builder bash -c "cd /build/ && VERSION=${VERSION} make rpm"
 
       env:
-        VERSION: 0.0.1
+        VERSION: ${{ env.VERSION }}
