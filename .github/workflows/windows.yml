@@ -31,29 +31,6 @@ jobs:
           max_attempts: 3
           command: choco install pkgconfiglite --allow-empty-checksums
 
-      - name: Set up winget
-        run: choco install winget -y
-
-      - name: Set Up Visual Studio Build Tools
-        run: |
-          winget install -e --id Microsoft.VisualStudio.Component.Windows10SDK --accept-source-agreements --accept-package-agreements
-          winget install -e --id Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Core --accept-source-agreements --accept-package-agreements
-          winget install -e --id Microsoft.VisualStudio.Component.VC.140 --accept-source-agreements --accept-package-agreements
-          winget install -e --id Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --accept-source-agreements --accept-package-agreements
-          winget install -e --id Microsoft.Component.MSBuild --accept-source-agreements --accept-package-agreements
-          winget install -e --id Microsoft.VisualStudio.2022.BuildTools --accept-source-agreements --accept-package-agreements
-          winget install -e --id Microsoft.VisualStudio.2019.BuildTools --accept-source-agreements --accept-package-agreements
-
-      - name: Set up Vcpkg
-        run: |
-          git clone https://github.com/Microsoft/vcpkg.git
-          cd vcpkg
-          bootstrap-vcpkg.bat
-
-      - name: Install OpenSSL with Vcpkg
-        run: |
-          C:\vcpkg\vcpkg.exe install openssl:x64-windows
-
       - name: Set up Rust
         run: choco install rust -y
 
