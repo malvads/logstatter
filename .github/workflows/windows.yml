@@ -27,6 +27,11 @@ jobs:
       - name: Set up pkgconfiglite
         run: choco install pkgconfiglite --allow-empty-checksums
 
+      - name: Set up OpenSSL
+        run: choco install openssl.light --params "/INSTALLDIR:C:\OpenSSL" -y
+        env:
+          OPENSSL_DIR: C:\OpenSSL
+
       - name: Set up Rust
         run: choco install rust -y
 
