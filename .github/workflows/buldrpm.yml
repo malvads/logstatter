@@ -32,6 +32,7 @@ jobs:
       run: |
         docker exec builder bash -c "ln -s /build/sdk9.cfg /etc/mock/default.cfg"
         docker exec builder bash -c "ls -l /build/sdk9.cfg /etc/mock/default.cfg"
+        docker exec builder bash -c "curl -I sh.rustup.rs"
 
     - name: Install RPM
       run: |
