@@ -1,8 +1,9 @@
 use serde_json::Value;
 use std::collections::HashMap;
-use reqwest::Error as ReqwestError;
+use reqwest::{Client, Error as ReqwestError};
 
 pub struct HttpClient {
+    client: Client,
     base_url: Option<String>,
 }
 
@@ -15,7 +16,10 @@ pub struct LogstashOperationResult {
 
 impl HttpClient {
     pub fn new() -> Self {
-        Self { base_url: None }
+        Self {
+            client: Client::new(),
+            base_url: None,
+        }
     }
 
     pub fn set_base_url(&mut self, base_url: &str) {
@@ -24,7 +28,7 @@ impl HttpClient {
 
     pub async fn make_request(&self, path: &str) -> Result<HashMap<String, Value>, ReqwestError> {
         let url = self.build_url(path);
-        let resp = reqwest::get(&url).await?.json::<HashMap<String, Value>>().await?;
+        let resp = self.client.get(&url).send().await?.json::<HashMap<String, Value>>().await?;
         Ok(resp)
     }
 
