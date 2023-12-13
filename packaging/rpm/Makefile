@@ -44,6 +44,7 @@ rpm: srpm
 		--define "__version $(VERSION)"\
 		--define "__release $(BUILD_NUMBER)"\
 		--resultdir=$(RESULT_DIR) \
+		--verbose \
 		--rebuild $(RESULT_DIR)/$(PACKAGE_NAME)*.src.rpm
 	@echo "======= Binary RPMs now available in $(RESULT_DIR) ======="
 
