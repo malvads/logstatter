@@ -31,12 +31,15 @@ jobs:
           max_attempts: 3
           command: choco install pkgconfiglite --allow-empty-checksums
 
-      - name: Install dependencies
+      - name: Install MSYS2
         run: |
-          pacman -S openssl-devel pkg-config --noconfirm
+          choco install msys2 -y
+          refreshenv  # Refresh the environment to include MSYS2 changes
+          pacman --noconfirm -Syu  # Update the MSYS2 installation
 
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      - name: Install dependencies with MSYS2 pacman
+        run: |
+          pacman --noconfirm -S mingw-w64-x86_64-openssl mingw-w64-x86_64-pkg-config
 
       - name: Set up Rust
         run: choco install rust -y
