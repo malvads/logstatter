@@ -37,6 +37,8 @@ jobs:
 
       - name: Build and test
         run: cargo build --verbose
+        env:
+          OPENSSL_DIR: C:\OpenSSL
 
       - name: Create tag
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
