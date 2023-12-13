@@ -34,8 +34,6 @@ jobs:
       - name: Install MSYS2
         run: |
           choco install msys2 -y
-          refreshenv  # Refresh the environment to include MSYS2 changes
-          pacman --noconfirm -Syu  # Update the MSYS2 installation
 
       - name: Install dependencies with MSYS2 pacman
         run: |
