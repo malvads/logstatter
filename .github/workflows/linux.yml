@@ -27,6 +27,12 @@ jobs:
       - name: Build and test
         run: cargo build --verbose
 
+      - name: Create tag
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git tag "latest/macos/x86_64"
+          git push origin "latest/macos/x86_64"
+
       - name: Create x86_64 Release
         uses: softprops/action-gh-release@v1
         with:
@@ -53,6 +59,12 @@ jobs:
           rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
       - name: Build and test
         run: cargo build --verbose
+
+      - name: Create tag
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git tag "latest/macos/aarch64"
+          git push origin "latest/macos/aarch64"
 
       - name: Create aarch64 Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

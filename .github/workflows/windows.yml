@@ -24,24 +24,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Vcpkg
-        run: |
-          git clone https://github.com/Microsoft/vcpkg
-          cd vcpkg
-          .\bootstrap-vcpkg.bat
-          .\vcpkg.exe install openssl-windows:x64-windows
-          .\vcpkg.exe install openssl:x64-windows-static
-          .\vcpkg.exe integrate install
-          cd ..
+      - name: Set up pkgconfiglite
+        run: choco install pkgconfiglite
 
       - name: Set up Rust
         run: choco install rust -y
 
       - name: Build and test
         run: cargo build --verbose
-        
+
+      - name: Create tag
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git tag "latest/windows"
+          git push origin "latest/windows"
+
       - name: Create Windows Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        
         uses: softprops/action-gh-release@v1
         with:
           files: target/release/logstatter.exe
