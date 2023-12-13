@@ -18,7 +18,7 @@ jobs:
         toolchain:
           - stable
     steps:
-      - uses: actions/checkout@latest
+      - uses: actions/checkout@v4
 
       - name: Set up Rust
         run: |
