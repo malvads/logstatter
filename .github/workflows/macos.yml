@@ -1,16 +1,15 @@
-name: macOS Build
+name: macOS Build and Release
 
 on:
   push:
   pull_request:
 
-env: 
+env:
   CARGO_TERM_COLOR: always
 
 jobs:
-
-  build_and_test:
-    name: logstatter - latest
+  build_and_release_x86_64:
+    name: logstatter - latest - x86_64
     runs-on: macos-latest
     strategy:
       matrix:
@@ -18,6 +17,32 @@ jobs:
           - stable
         arch:
           - x86_64
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
+      - name: Build and test
+        run: cargo build --verbose
+
+      - name: Create x86_64 Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/release/logstatter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: latest/macos/x86_64
+
+  build_and_release_arm64:
+    name: logstatter - latest - arm64
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        toolchain:
+          - stable
+        arch:
           - arm64
 
     steps:
@@ -28,3 +53,12 @@ jobs:
           rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
       - name: Build and test
         run: cargo build --verbose
+
+      - name: Create arm64 Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/release/logstatter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: latest/macos/arm64
