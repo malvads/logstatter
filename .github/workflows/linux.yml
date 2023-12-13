@@ -30,8 +30,8 @@ jobs:
       - name: Create tag
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          git tag "latest/macos/x86_64"
-          git push origin "latest/macos/x86_64"
+          git tag "latest/linux/x86_64"
+          git push origin "latest/linux/x86_64"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -66,8 +66,8 @@ jobs:
       - name: Create tag
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          git tag "latest/macos/aarch64"
-          git push origin "latest/macos/aarch64"
+          git tag "latest/linux/aarch64"
+          git push origin "latest/linux/aarch64"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
