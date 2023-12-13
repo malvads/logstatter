@@ -25,7 +25,7 @@ jobs:
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
       - name: Build and test
-        run: cargo build --verbose
+        run: cargo build --release
 
 
       - name: Create tag
@@ -61,7 +61,7 @@ jobs:
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
       - name: Build and test
-        run: cargo build --verbose
+        run: cargo build --release
 
       - name: Create tag
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
