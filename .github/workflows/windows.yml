@@ -28,7 +28,7 @@ jobs:
         run: choco install pkgconfiglite --allow-empty-checksums
 
       - name: Set up OpenSSL
-        run: choco install openssl.light --params "/INSTALLDIR:C:\OpenSSL" -y
+        run: choco install openssl --params "/INSTALLDIR:C:\OpenSSL" -y
         env:
           OPENSSL_DIR: C:\OpenSSL
 
