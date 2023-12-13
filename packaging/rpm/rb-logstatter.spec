@@ -1,8 +1,8 @@
 Name:      rb-logstatter
-Version:   0.0.1
-Release:   1%{?dist}
+Version:   %{__version}
+Release:   %{__release}%{?dist}
 BuildArch: x86_64
-Summary:   RedBorder Python AI Outliers Detection Service
+Summary:   Logstatter service to monitor logstash
 
 License:   AGPL-3.0
 URL:       https://github.com/malvads/logstatter
