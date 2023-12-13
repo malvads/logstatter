@@ -24,6 +24,9 @@ jobs:
       id: version
       run: echo "VERSION=$(echo ${GITHUB_REF#refs/heads/release/})" >> $GITHUB_ENV
 
+    - name: Pull Docker Image
+      run: docker pull builder:latest
+
     - name: Run Docker Container
       run: docker run -d --name builder builder /bin/sleep infinity
 
