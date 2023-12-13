@@ -30,10 +30,7 @@ jobs:
 
       - name: Create tag
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          git fetch --all --tags
-          git tag "latest/macos/x86_64"
-          git push origin "latest/macos/x86_64"
+        run: git fetch --all --tags && tag_name="latest/macos/x86_64" && if ! git rev-parse -q --verify "refs/tags/$tag_name" >/dev/null; then git tag "$tag_name" && git push origin "$tag_name"; fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -68,10 +65,7 @@ jobs:
 
       - name: Create tag
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          git fetch --all --tags
-          git tag "latest/macos/arm64"
-          git push origin "latest/macos/arm64"
+        run: git fetch --all --tags && tag_name="latest/macos/arm64" && if ! git rev-parse -q --verify "refs/tags/$tag_name" >/dev/null; then git tag "$tag_name" && git push origin "$tag_name"; fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
