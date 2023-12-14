@@ -1,10 +1,9 @@
 name: RPM Build and Upload
 
 on:
-  push:
+  pull_request:
     branches:
       - 'release/*'
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,6 +17,28 @@ jobs:
     - name: Set Version
       id: version
       run: echo "VERSION=${GITHUB_REF#refs/heads/release/}" >> $GITHUB_ENV
+
+    - name: Comment version BUMP
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const version = process.env.VERSION;
+          if (!version) {
+            core.setFailed('Error: VERSION environment variable is not set.');
+          }
+
+          const commentBody = `Version ${version} is going to be the next version release :), wait for RPM and then complete the merge :tada:`;
+
+          const { data: comment } = await github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: commentBody,
+          });
+
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{ env.VERSION }}
 
     - name: Run Docker Container
       run: docker run --privileged -d --name builder --network host rockylinux:9 /bin/sleep infinity 
@@ -50,13 +71,96 @@ jobs:
       run: |
         find ./rpms -type f -not -name '*.rpm' -exec rm {} \;
 
+    - name: Bump version with actions
+      run: |
+        branch=$(git symbolic-ref --short HEAD)
+        tag=$(git describe --tags --abbrev=0)
+
+        if [ -z "$VERSION" ]; then
+          echo "Error: VERSION environment variable is not set."
+          exit 1
+        fi
+
+        changelog_file="changelog.tmp"
+        echo > $changelog_file
+
+        declare -A authors_commits
+        declare -A authors_emails
+        declare -A authors_names
+        IFS=$'\n'
+        for message in $(git log --pretty=format:"%h %s" $tag..$branch); do
+          commit_hash=$(echo "$message" | awk '{print $1}')
+          commit_subject=$(echo "$message" | sed 's/^[^ ]* //')
+          author_email=$(git log --pretty=format:"%ae" -n 1 $commit_hash)
+          author_name=$(git log --pretty=format:"%an" -n 1 --author="$author_email" $tag..$branch)
+          if [[ "$author_email" != *"noreply.github.com"* ]]; then
+            if ! grep -q "$author_name" "$changelog_file"; then
+              authors_names["$author_email"]=$author_name
+            fi
+
+            authors_commits["$author_email"]+="- $commit_subject\n"
+            authors_emails["$author_email"]=1 
+          fi
+        done
+
+        current_date=$(date "+%a %b %d %Y")
+        all_authors=""
+        for author_email in "${!authors_commits[@]}"; do
+          all_authors+="${authors_names["$author_email"]}, "
+        done
+
+        all_authors=${all_authors%, *}
+
+        all_emails=""
+        for email in "${!authors_emails[@]}"; do
+          all_emails+="$email, "
+        done
+
+        # Trim the trailing comma and space
+        all_emails=${all_emails%, *}
+
+        echo -e "* $current_date $all_authors <$all_emails> - $VERSION" >> $changelog_file
+
+        for author_email in "${!authors_commits[@]}"; do
+          echo -e "  ${authors_commits["$author_email"]}" >> $changelog_file
+        done
+
+        spec_file=$(find . -type f -name "*.spec" | head -n 1)
+        changelog_section=$(awk '/%changelog/{p=1;next} p' $spec_file)
+
+        awk -v new_changelog="$(cat $changelog_file)" -v RS= -v ORS='\n\n' '{gsub(/%changelog/, "%changelog\n" new_changelog)} 1' $spec_file > temp_spec_file
+
+        awk '/^\* / {
+          if (last_line != $0) {
+            printf "%s\n", $0
+            last_line = $0
+          }
+          next
+        }
+        {
+          gsub(/^   - /, "- ")
+          sub(/^[[:space:]]+/, "")
+          if ($0 != "" && last_line != $0) {
+            print
+            last_line = $0
+          }
+        }' temp_spec_file > $spec_file
+
+        rm $changelog_file
+        git add --all
+        git commit -m "Bump version $VERSION"
+        git push origin release/$VERSION
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{ env.VERSION }}
+
     - name: Create tag
       run: |
         git fetch --all --tags
         tag_name="${{ env.VERSION }}"
         if ! git rev-parse -q --verify "refs/tags/$tag_name" >/dev/null; then
           git tag "$tag_name" && git push origin "$tag_name"
-        fi
+        fi__
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -67,3 +171,5 @@ jobs:
         tag_name: ${{ env.VERSION }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
