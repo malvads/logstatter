@@ -35,7 +35,7 @@ jobs:
           REPO_NAME=$(echo "${{ github.repository }}" | cut -d '/' -f 2)
 
           API_URL="https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}"
-          DEFAULT_BRANCH=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$API_URL" | jq -r '.default_branch')
+          DEFAULT_BRANCH=$(curl -s "$API_URL" | jq -r '.default_branch')
 
           echo "DEFAULT_BRANCH=${DEFAULT_BRANCH}" >> $GITHUB_ENV"
         env:
