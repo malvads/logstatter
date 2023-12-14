@@ -59,6 +59,7 @@ jobs:
           echo "Set VERSION to $VERSION"
       - name: Debug
         run: |
+          git fetch --all --tags
           git log --pretty=format:"%h %s" 0.0.1..main
         env:
           DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
