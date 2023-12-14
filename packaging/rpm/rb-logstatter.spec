@@ -34,6 +34,7 @@ systemctl start rb-logstatter
 /etc/logstatter/logstatter.conf
 %doc
 %changelog
+* Thu Dec 14 2023  <> - 0.0.2
 * Thu Dec 14 2023 Miguel Negron, Malvads <manegron@redborder.com, malvarez@redborder.com> - 0.0.2
 * Mon Dec 11 2023 Miguel Álvarez <malvarez@redborder.com> - 0.0.1-1
 - Initial package release
