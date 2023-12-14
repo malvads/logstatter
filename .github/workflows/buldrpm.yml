@@ -45,7 +45,14 @@ jobs:
           git pull origin $DEFAULT_BRANCH
         env:
           DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
-          
+
+      - name: Create tag
+        run: |
+          git fetch --all --tags
+          tag_name="${{ env.VERSION }}"
+          if ! git rev-parse -q --verify "refs/tags/$tag_name" >/dev/null; then
+            git tag $tag
+            
       - name: Set Version & pull tag
         id: version
         run: |
@@ -204,13 +211,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ env.VERSION }}
           DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
-
-      - name: Create tag
-        run: |
-          git fetch --all --tags
-          tag_name="${{ env.VERSION }}"
-          if ! git rev-parse -q --verify "refs/tags/$tag_name" >/dev/null; then
-            git tag $tag
       
       - name: Release
         uses: softprops/action-gh-release@v1
