@@ -29,12 +29,11 @@ jobs:
       - name: Set Version
         id: version
         run: |
-          # Extract everything after "release/" in the branch or pull request name
-          VERSION=$(echo "$GITHUB_REF" | sed -n 's|^refs/\(pull\|heads\)/.*release/\(.*\)$|\2|p')
+          VERSION=$(echo ${{ github.head_ref }} | sed 's/release\///')
 
-          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
           echo "Set VERSION to $VERSION"
-          echo $GITHUB_ENV
 
       - name: Comment version BUMP
         uses: actions/github-script@v5
