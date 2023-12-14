@@ -46,6 +46,18 @@ systemctl start rb-logstatter
 - Update workflow
 - Add auto bumping
 - Bump version 0.0.2
+* Thu Dec 14 2023 Miguel Negron, Malvads, GitHub Actions <manegron@redborder.com, malvarez@redborder.com, actions@github.com> - 0.0.2
+- Trigger workflow
+- Update README
+- Delete chagelog tpm
+- Fix CI
+- Merge branch 'release/0.0.2' of github.com:redBorder/logstatter into release/0.0.2
+- Add build dates
+- Merge branch 'main' into release/0.0.2
+- Fix auto bumping
+- Update workflow
+- Add auto bumping
+- Bump version 0.0.2
 * Thu Dec 14 2023 Malvads, Miguel Negron <malvarez@redborder.com, manegron@redborder.com> - 0.0.2
 - Fix auto bumping
 - Add auto bumping
