@@ -3,7 +3,7 @@ name: RPM Build and Upload
 on:
   push:
     branches:
-      - release/*
+      - 'release/*'
 
 jobs:
   build:
@@ -30,11 +30,11 @@ jobs:
     
     - name: Setup SDK
       run: |
+        docker exec builder bash -c "curl https://raw.githubusercontent.com/redBorder/repoinit/master/sdk9.cfg > /build/sdk9.cfg"
+        docker exec builder bash -c "echo 'config_opts['use_host_resolv'] = True' >> /build/sdk9.cfg"
         docker exec builder bash -c "ln -s /build/sdk9.cfg /etc/mock/default.cfg"
-        docker exec builder bash -c "ls -l /build/sdk9.cfg /etc/mock/default.cfg"
-        docker exec builder bash -c "curl -I sh.rustup.rs"
 
-    - name: Install RPM
+    - name: Build RPM using mock
       run: |
         docker exec builder bash -c "git config --global --add safe.directory /build"
         docker exec builder bash -c "cd /build/ && VERSION=${VERSION} make rpm"

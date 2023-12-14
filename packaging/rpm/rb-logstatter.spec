@@ -8,7 +8,7 @@ License:   AGPL-3.0
 URL:       https://github.com/malvads/logstatter
 Source0:   %{name}-%{version}.tar.gz
 
-BuildRequires: gcc openssl-devel
+BuildRequires: perl gcc openssl-devel
 
 %global debug_package %{nil}
 
