@@ -183,7 +183,7 @@ jobs:
           # Trim the trailing comma and space
           all_emails=${all_emails%, *}
 
-          echo -e "* $current_date $all_authors <$all_emails> - $VERSION" >> $changelog_file
+          echo -e "* $current_date $all_authors <$all_emails> - $VERSION-1" >> $changelog_file
           echo -e "$all_commits" >> $changelog_file
 
           spec_file=$(find . -type f -name "*.spec" | head -n 1)
