@@ -30,7 +30,7 @@ jobs:
         id: version
         run: |
           # Extract everything after "release/" in the branch or pull request name
-          VERSION=$(echo "$GITHUB_REF" | sed -n 's|^refs/(pull|heads)/.*release/\(.*\)$|\2|p')
+          VERSION=$(echo "$GITHUB_REF" | sed -n 's|^refs/\(pull\|heads\)/.*release/\(.*\)$|\2|p')
 
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Set VERSION to $VERSION"
