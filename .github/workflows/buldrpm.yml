@@ -30,7 +30,7 @@ jobs:
       - name: Get Default Branch
         id: get-default-branch
         run: |
-          DEFAULT_BRANCH=$(curl -sSL https://api.github.com/repos/${{ github.repository }}/ | jq -r .default_branch)
+          DEFAULT_BRANCH=${{ env.GITHUB_REF }}
           echo "::set-output name=default_branch::${DEFAULT_BRANCH}"
       
       - name: Debug
