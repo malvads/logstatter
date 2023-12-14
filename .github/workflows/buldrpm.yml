@@ -57,12 +57,7 @@ jobs:
           git pull origin $VERSION
 
           echo "Set VERSION to $VERSION"
-          
-      - name: Checkout to default branch
-        run: |
-          git checkout $DEFAULT_BRANCH
-        env:
-          DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
+
       - name: Comment version BUMP
         uses: actions/github-script@v5
         with:
@@ -115,6 +110,12 @@ jobs:
       - name: Delete not .rpm files
         run: |
           find ./rpms -type f -not -name '*.rpm' -exec rm {} \;
+
+      - name: Checkout to default branch
+        run: |
+          git checkout $DEFAULT_BRANCH
+        env:
+          DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
 
       - name: Bump version with actions
         run: |
