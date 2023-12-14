@@ -74,7 +74,7 @@ jobs:
             echo "Branch 'main' does not exist."
             exit 1
           fi
-
+          git checkout main
           # Debug log for commits between '0.0.1' and 'main'
           git log --pretty=format:"%h %s" 0.0.1..main
         env:
