@@ -27,8 +27,7 @@ jobs:
         run: echo "Running the workflow for branch ${GITHUB_HEAD_REF} to ${GITHUB_BASE_REF}" || (echo "Skipping workflow as the conditions are not met." && exit 0)
       - name: Debug
         run: |
-          git status
-          env
+          git symbolic-ref --short HEAD
           
       - name: Set Version
         id: version
