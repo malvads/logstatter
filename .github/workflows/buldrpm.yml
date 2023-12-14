@@ -42,22 +42,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Debug
+      - name: Pull default branch
         run: |
-          echo $DEFAULT_BRANCH
-          git describe --tags --abbrev=0
+          git pull origin $DEFAULT_BRANCH
         env:
           DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
           
-      - name: Set Version
+      - name: Set Version & pull tag
         id: version
         run: |
           VERSION=$(echo ${{ github.head_ref }} | sed 's/release\///')
 
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          git pull origin $VERSION
 
           echo "Set VERSION to $VERSION"
-
+      - name: Debug
+        run: |
+          git log --pretty=format:"%h %s" 0.0.1..main
+        env:
+          DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
       - name: Comment version BUMP
         uses: actions/github-script@v5
         with:
