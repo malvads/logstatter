@@ -197,7 +197,7 @@ jobs:
           }' temp_spec_file > $spec_file
 
           rm $changelog_file
-          rm $temp_spec_file
+          rm temp_spec_file
           git add --all
           git commit -m "Bump version $VERSION"
           git push origin release/$VERSION
