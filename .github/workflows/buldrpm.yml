@@ -60,6 +60,22 @@ jobs:
       - name: Debug
         run: |
           git fetch --all --tags
+          git ls-remote --tags origin
+          git branch -a
+
+          # Check if the tag '0.0.1' exists
+          if ! git tag -l '0.0.1'; then
+            echo "Tag '0.0.1' does not exist."
+            exit 1
+          fi
+
+          # Check if the branch 'main' exists
+          if ! git branch -a | grep -q 'remotes/origin/main'; then
+            echo "Branch 'main' does not exist."
+            exit 1
+          fi
+
+          # Debug log for commits between '0.0.1' and 'main'
           git log --pretty=format:"%h %s" 0.0.1..main
         env:
           DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
