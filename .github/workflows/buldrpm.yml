@@ -30,7 +30,7 @@ jobs:
       - name: Get Default Branch
         id: get-default-branch
         run: |
-          DEFAULT_BRANCH=${{ env.GITHUB_REF }}
+          DEFAULT_BRANCH=$(echo "${{ env.GITHUB_REF }}" | awk -F/ '{print $3}')
           echo "::set-output name=default_branch::${DEFAULT_BRANCH}"
       
       - name: Debug
