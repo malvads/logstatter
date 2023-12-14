@@ -25,7 +25,11 @@ jobs:
           startsWith(github.event.pull_request.head.ref, 'release/') &&
           (github.event.pull_request.base.ref == 'master' || github.event.pull_request.base.ref == 'main')
         run: echo "Running the workflow for branch ${GITHUB_HEAD_REF} to ${GITHUB_BASE_REF}" || (echo "Skipping workflow as the conditions are not met." && exit 0)
-
+      - name: Debug
+        run: |
+          git status
+          env
+          
       - name: Set Version
         id: version
         run: |
@@ -174,3 +178,11 @@ jobs:
           tag_name="${{ env.VERSION }}"
           if ! git rev-parse -q --verify "refs/tags/$tag_name" >/dev/null; then
             git tag "$tag
+      
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./rpms/*
+          tag_name: ${{ env.VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
