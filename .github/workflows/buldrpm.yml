@@ -14,9 +14,27 @@ jobs:
       with:
         fetch-depth: 0 
 
-    - name: Set Version
-      id: version
-      run: echo "VERSION=${GITHUB_REF#refs/heads/release/}" >> $GITHUB_ENV
+    - name: Check Branch and Target
+      if: |
+        github.event_name == 'pull_request' &&
+        (github.event.action == 'opened' || github.event.action == 'synchronize') &&
+        startsWith(github.event.pull_request.head.ref, 'release/') &&
+        (github.event.pull_request.base.ref == 'master' || github.event.pull_request.base.ref == 'main')
+      run: |
+        echo "Running the workflow for branch ${GITHUB_HEAD_REF} to ${GITHUB_BASE_REF}"
+      else:
+        echo "Skipping workflow as the conditions are not met."
+        exit 0
+
+      - name: Set Version
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/pull/* ]]; then
+            VERSION=$(echo $GITHUB_REF | sed 's|refs/pull/[0-9]*/merge|release|g')
+          else
+            VERSION=$(echo $GITHUB_REF | sed 's|refs/heads/release/||g')
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
     - name: Comment version BUMP
       uses: actions/github-script@v5
