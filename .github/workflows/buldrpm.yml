@@ -133,7 +133,7 @@ jobs:
           git pull origin release/$VERSION
           git checkout release/$VERSION
           branch=$DEFAULT_BRANCH
-          tag=$(git describe --tags --abbrev=0)
+          tag=$(git tag -l '*.*.*' | grep -v '-' | sort -V | head -n -1 | tail -n 1)
 
           if [ -z "$VERSION" ]; then
             echo "Error: VERSION environment variable is not set."
