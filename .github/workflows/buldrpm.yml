@@ -44,7 +44,11 @@ jobs:
 
     - name: Copy RPMS
       run: |
-        docker cp builder:/build/packaging/rpm/. ./.rpms
+        docker cp builder:/build/packaging/rpm/pkgs/. ./rpms
+
+    - name: Delete not .rpm files
+      run: |
+        find ./rpms -type f -not -name '*.rpm' -exec rm {} \;
 
     - name: Create tag
       run: |
