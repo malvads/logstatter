@@ -41,3 +41,25 @@ jobs:
 
       env:
         VERSION: ${{ env.VERSION }}
+
+    - name: Copy RPMS
+      run: |
+        docker cp builder:/build/packaging/rpm/. ./.rpms
+
+    - name: Create tag
+      run: |
+        git fetch --all --tags
+        tag_name="${{ env.VERSION }}"
+        if ! git rev-parse -q --verify "refs/tags/$tag_name" >/dev/null; then
+          git tag "$tag_name" && git push origin "$tag_name"
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ./.rpms/*
+        tag_name: ${{ env.VERSION }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
