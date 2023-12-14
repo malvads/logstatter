@@ -29,11 +29,8 @@ jobs:
       - name: Set Version
         id: version
         run: |
-          if [[ $GITHUB_REF == refs/pull/* ]]; then
-            VERSION=$(echo "$GITHUB_REF" | sed 's|^refs/pull/[0-9]*/merge$|release|g')
-          else
-            VERSION=$(echo "$GITHUB_REF" | sed -n 's|^refs/heads/release/\([0-9]*\)$|\1|p')
-          fi
+          # Extract everything after "release/" in the branch or pull request name
+          VERSION=$(echo "$GITHUB_REF" | sed -n 's|^refs/(pull|heads)/.*release/\(.*\)$|\2|p')
 
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Set VERSION to $VERSION"
