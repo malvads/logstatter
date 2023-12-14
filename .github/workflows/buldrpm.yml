@@ -52,7 +52,7 @@ jobs:
           tag_name="${{ env.VERSION }}"
           if ! git rev-parse -q --verify "refs/tags/$tag_name" >/dev/null; then
             git tag $tag
-            
+
       - name: Set Version & pull tag
         id: version
         run: |
