@@ -30,8 +30,16 @@ jobs:
       - name: Get Default Branch
         id: get-default-branch
         run: |
-          DEFAULT_BRANCH=$(echo "${{ env.GITHUB_REF }}" | awk -F/ '{print $3}')
+          # Get the repository owner and name
+          REPO_OWNER=$(echo "${{ github.repository }}" | cut -d '/' -f 1)
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d '/' -f 2)
+
+          API_URL="https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}"
+          DEFAULT_BRANCH=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$API_URL" | jq -r '.default_branch')
+
           echo "::set-output name=default_branch::${DEFAULT_BRANCH}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Debug
         run: |
