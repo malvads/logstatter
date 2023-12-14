@@ -32,7 +32,7 @@ jobs:
           if [[ $GITHUB_REF == refs/pull/* ]]; then
             VERSION=$(echo $GITHUB_REF | sed 's|refs/pull/[0-9]*/merge|release|g')
           else
-            VERSION=$(echo $GITHUB_REF | sed 's|refs/heads/release/||g')
+            VERSION=$(echo $GITHUB_REF | sed -n 's|refs/heads/release/\([0-9]*\)|\1|p')
           fi
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
