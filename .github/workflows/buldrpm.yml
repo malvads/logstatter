@@ -36,12 +36,12 @@ jobs:
 
           API_URL="https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}"
           echo $API_URL
-          DEFAULT_BRANCH="main"
+          DEFAULT_BRANCH=$(curl -s "$API_URL" | jq -r '.default_branch')
 
-          echo "DEFAULT_BRANCH=${DEFAULT_BRANCH}" >> $GITHUB_ENV"
+          echo "DEFAULT_BRANCH=${DEFAULT_BRANCH}" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Debug
         run: |
           echo $DEFAULT_BRANCH
