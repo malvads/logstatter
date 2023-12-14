@@ -56,13 +56,13 @@ jobs:
           git fetch --all --tags
           tag_name="${{ env.VERSION }}"
           if ! git rev-parse -q --verify "refs/tags/$tag_name" >/dev/null; then
-            git tag $tag
             git checkout $DEFAULT_BRANCH
+            git tag $tag
             git push origin $tag
           fi
         env:
           DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
-          
+
       - name: Set Version & pull tag
         id: version
         run: |
