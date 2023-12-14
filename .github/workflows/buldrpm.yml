@@ -17,6 +17,11 @@ jobs:
           fetch-depth: 0
           ref: 
 
+      - name: Set Git identity
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
       - name: Check Branch and Target
         if: >
           github.event_name == 'pull_request' &&
@@ -52,6 +57,7 @@ jobs:
           tag_name="${{ env.VERSION }}"
           if ! git rev-parse -q --verify "refs/tags/$tag_name" >/dev/null; then
             git tag $tag
+            git push origin $tag
           fi
 
       - name: Set Version & pull tag
@@ -122,11 +128,6 @@ jobs:
           git checkout $DEFAULT_BRANCH
         env:
           DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
-
-      - name: Set Git identity
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
 
       - name: Bump version with actions
         run: |
