@@ -25,7 +25,7 @@ jobs:
         (github.event.pull_request.base.ref == 'master' || github.event.pull_request.base.ref == 'main')
       run: |
         echo "Running the workflow for branch ${GITHUB_HEAD_REF} to ${GITHUB_BASE_REF}"
-      else:
+      else
         echo "Skipping workflow as the conditions are not met."
         exit 0
 
