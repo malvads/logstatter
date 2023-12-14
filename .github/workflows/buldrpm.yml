@@ -3,7 +3,8 @@ name: RPM Build and Upload
 on:
   pull_request:
     branches:
-      - 'release/*'
+      - 'main'
+      - 'master'
 
 jobs:
   build:
