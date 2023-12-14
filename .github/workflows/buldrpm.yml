@@ -124,6 +124,9 @@ jobs:
 
       - name: Bump version with actions
         run: |
+          git pull
+          git pull origin release/$VERSION
+          git checkout release/$VERSION
           branch=$DEFAULT_BRANCH
           tag=$(git describe --tags --abbrev=0)
 
@@ -194,6 +197,7 @@ jobs:
           }' temp_spec_file > $spec_file
 
           rm $changelog_file
+          rm $temp_spec_file
           git add --all
           git commit -m "Bump version $VERSION"
           git push origin release/$VERSION
