@@ -5,7 +5,8 @@
 </p>
 
 ![build](https://github.com/redBorder/logstatter/actions/workflows/buldrpm.yml/badge.svg?event=pull_request)
-
+![build](https://github.com/redBorder/logstatter/actions/workflows/macos.yml/badge.svg?event=push)
+![build](https://github.com/redBorder/logstatter/actions/workflows/linux.yml/badge.svg?event=push)
 
 ## Overview
 
