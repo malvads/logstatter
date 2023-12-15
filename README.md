@@ -7,6 +7,7 @@
 ![build](https://github.com/redBorder/logstatter/actions/workflows/buldrpm.yml/badge.svg?event=pull_request)
 ![build](https://github.com/redBorder/logstatter/actions/workflows/macos.yml/badge.svg?event=push)
 ![build](https://github.com/redBorder/logstatter/actions/workflows/linux.yml/badge.svg?event=push)
+[![AGPL License](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](https://opensource.org/licenses/AGPL-3.0)
 
 ## Overview
 
