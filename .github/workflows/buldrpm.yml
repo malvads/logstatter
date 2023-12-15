@@ -17,11 +17,6 @@ jobs:
           fetch-depth: 0
           ref: 
 
-      - name: Set Git identity
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-
       - name: Check Branch and Target
         if: >
           github.event_name == 'pull_request' &&
@@ -29,27 +24,6 @@ jobs:
           startsWith(github.event.pull_request.head.ref, 'release/') &&
           (github.event.pull_request.base.ref == 'master' || github.event.pull_request.base.ref == 'main')
         run: echo "Running the workflow for branch ${GITHUB_HEAD_REF} to ${GITHUB_BASE_REF}" || (echo "Skipping workflow as the conditions are not met." && exit 0)
-
-      - name: Get Default Branch
-        id: get-default-branch
-        run: |
-          # Get the repository owner and name
-          REPO_OWNER=$(echo "${{ github.repository }}" | cut -d '/' -f 1)
-          REPO_NAME=$(echo "${{ github.repository }}" | cut -d '/' -f 2)
-
-          API_URL="https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}"
-          echo $API_URL
-          DEFAULT_BRANCH=$(curl -s "$API_URL" | jq -r '.default_branch')
-
-          echo "DEFAULT_BRANCH=${DEFAULT_BRANCH}" >> $GITHUB_ENV
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pull default branch
-        run: |
-          git pull origin $DEFAULT_BRANCH
-        env:
-          DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
 
       - name: Create tag
         run: |
@@ -120,103 +94,6 @@ jobs:
       - name: Delete not .rpm files
         run: |
           find ./rpms -type f -not -name '*.rpm' -exec rm {} \;
-
-      - name: Checkout to default branch
-        run: |
-          git checkout $DEFAULT_BRANCH
-        env:
-          DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
-
-      - name: Bump version with actions
-        run: |
-          git pull
-          git pull origin release/$VERSION
-          git checkout release/$VERSION
-          branch=$DEFAULT_BRANCH
-          tag=$(git tag -l '*.*.*' | grep -v '-' | sort -V | head -n -1 | tail -n 1)
-
-          if [ -z "$VERSION" ]; then
-            echo "Error: VERSION environment variable is not set."
-            exit 1
-          fi
-
-          changelog_file="changelog.tmp"
-          echo > $changelog_file
-
-          declare -A authors_commits
-          declare -A authors_emails
-          declare -A authors_names
-          IFS=$'\n'
-          for message in $(git log --pretty=format:"%h %s" $tag..$branch); do
-            commit_hash=$(echo "$message" | awk '{print $1}')
-            commit_subject=$(echo "$message" | sed 's/^[^ ]* //')
-            author_email=$(git log --pretty=format:"%ae" -n 1 $commit_hash)
-            author_name=$(git log --pretty=format:"%an" -n 1 --author="$author_email" $tag..$branch)
-            if [[ "$author_email" != *"noreply.github.com"* ]]; then
-              if ! grep -q "$author_name" "$changelog_file"; then
-                authors_names["$author_email"]=$author_name
-              fi
-
-              authors_commits["$author_email"]+="- $commit_subject\n"
-              authors_emails["$author_email"]=1
-            fi
-          done
-
-          current_date=$(date "+%a %b %d %Y")
-          all_authors=""
-          for author_email in "${!authors_commits[@]}"; do
-            all_authors+="${authors_names["$author_email"]}, "
-          done
-
-          all_authors=${all_authors%, *}
-
-          all_emails=""
-          for email in "${!authors_emails[@]}"; do
-            all_emails+="$email, "
-          done
-
-          all_commits=""
-          for commits in "${!authors_commits[@]}"; do
-            all_commits+="${authors_commits["$commits"]}"
-          done
-
-          # Trim the trailing comma and space
-          all_emails=${all_emails%, *}
-
-          echo -e "* $current_date $all_authors <$all_emails> - $VERSION-1" >> $changelog_file
-          echo -e "$all_commits" >> $changelog_file
-
-          spec_file=$(find . -type f -name "*.spec" | head -n 1)
-          changelog_section=$(awk '/%changelog/{p=1;next} p' $spec_file)
-
-          awk -v new_changelog="$(cat $changelog_file)" -v RS= -v ORS='\n\n' '{gsub(/%changelog/, "%changelog\n" new_changelog)} 1' $spec_file > temp_spec_file
-
-          awk '/^\* / {
-            if (last_line != $0) {
-              printf "%s\n", $0
-              last_line = $0
-            }
-            next
-          }
-          {
-            gsub(/^   - /, "- ")
-            sub(/^[[:space:]]+/, "")
-            if ($0 != "" && last_line != $0) {
-              print
-              last_line = $0
-            }
-          }' temp_spec_file > $spec_file
-
-          rm $changelog_file
-          rm temp_spec_file
-          git add $spec_file
-          git commit -m "Bump version $VERSION"
-          git push origin release/$VERSION
-
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ env.VERSION }}
-          DEFAULT_BRANCH: ${{ env.DEFAULT_BRANCH }}
       
       - name: Release
         uses: softprops/action-gh-release@v1
