@@ -4,7 +4,7 @@
   <img src="/assets/logstatter.png" alt="LogStatter Logo">
 </p>
 
-![build](https://github.com/redBorder/logstatter/actions/workflows/buldrpm.yml/badge.svg?event=push)
+![build](https://github.com/redBorder/logstatter/actions/workflows/buldrpm.yml/badge.svg?event=pull_request)
 
 
 ## Overview
