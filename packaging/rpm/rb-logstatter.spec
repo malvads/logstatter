@@ -47,8 +47,4 @@ systemctl start rb-logstatter
 %doc
 
 %changelog
-* Fri Dec 15 2023 Miguel Álvarez <malvarez@redborder.com> - 0.0.2-1
-- Fix auto bumping
 
-* Mon Dec 11 2023 Miguel Álvarez <malvarez@redborder.com> - 0.0.1-1
-- Initial package release
